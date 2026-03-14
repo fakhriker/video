@@ -3,7 +3,6 @@
 <head>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
 <title>Video Intro</title>
 
 <style>
@@ -12,8 +11,10 @@ body{
 margin:0;
 background:black;
 overflow:hidden;
+font-family:Arial, sans-serif;
 }
 
+/* Video fullscreen */
 video{
 position:fixed;
 top:0;
@@ -21,6 +22,30 @@ left:0;
 width:100%;
 height:100%;
 object-fit:cover;
+display:none;
+}
+
+/* Tampilan awal */
+#startScreen{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+display:flex;
+justify-content:center;
+align-items:center;
+background:black;
+}
+
+/* Tombol tengah */
+#startBtn{
+padding:20px 40px;
+font-size:22px;
+background:white;
+border:none;
+border-radius:10px;
+cursor:pointer;
 }
 
 </style>
@@ -29,31 +54,31 @@ object-fit:cover;
 
 <body>
 
-<video id="video" autoplay playsinline>
+<div id="startScreen">
+<button id="startBtn">Klik Disini</button>
+</div>
+
+<video id="video" playsinline>
 <source src="jump.mp4" type="video/mp4">
 </video>
 
 <script>
 
 let video = document.getElementById("video");
+let startBtn = document.getElementById("startBtn");
+let startScreen = document.getElementById("startScreen");
 
-function playVideo(){
+startBtn.onclick = function(){
+
+startScreen.style.display = "none";
+
+video.style.display = "block";
 
 video.muted = false;
 
-let playPromise = video.play();
-
-if(playPromise !== undefined){
-playPromise.catch(()=>{
-document.body.addEventListener("click", ()=>{
 video.play();
-});
-});
-}
 
 }
-
-window.onload = playVideo;
 
 </script>
 
