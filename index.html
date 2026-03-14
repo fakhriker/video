@@ -1,0 +1,97 @@
+#include <WiFi.h>
+#include <WebServer.h>
+#include <DNSServer.h>
+
+String ssid;
+
+DNSServer dnsServer;
+WebServer server(80);
+
+String webpage = R"rawliteral(
+
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+
+body{
+margin:0;
+background:black;
+overflow:hidden;
+}
+
+video{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<video id="intro" autoplay playsinline>
+<source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+</video>
+
+<script>
+
+let v = document.getElementById("intro");
+
+window.onload = function(){
+v.muted = false;
+v.play().catch(()=>{});
+}
+
+</script>
+
+</body>
+</html>
+
+)rawliteral";
+
+
+void handleRoot(){
+  server.send(200,"text/html",webpage);
+}
+
+void setup(){
+
+Serial.begin(115200);
+
+randomSeed(micros());
+
+// SSID berubah setiap boot
+ssid = "VIDEO-" + String(random(1000,9999));
+
+WiFi.softAP(ssid.c_str());
+
+dnsServer.start(53, "*", WiFi.softAPIP());
+
+server.on("/", handleRoot);
+server.onNotFound(handleRoot);
+
+server.begin();
+
+Serial.println("WiFi Ready");
+Serial.print("SSID : ");
+Serial.println(ssid);
+Serial.print("IP   : ");
+Serial.println(WiFi.softAPIP());
+
+}
+
+void loop(){
+
+dnsServer.processNextRequest();
+server.handleClient();
+
+}
