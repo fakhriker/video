@@ -14,7 +14,6 @@ overflow:hidden;
 font-family:Arial, sans-serif;
 }
 
-/* Video fullscreen */
 video{
 position:fixed;
 top:0;
@@ -25,7 +24,6 @@ object-fit:cover;
 display:none;
 }
 
-/* Tampilan awal */
 #startScreen{
 position:fixed;
 top:0;
@@ -38,7 +36,6 @@ align-items:center;
 background:black;
 }
 
-/* Tombol tengah */
 #startBtn{
 padding:20px 40px;
 font-size:22px;
@@ -58,7 +55,7 @@ cursor:pointer;
 <button id="startBtn">Klik Disini</button>
 </div>
 
-<video id="video" playsinline>
+<video id="video" playsinline disablepictureinpicture controlslist="nodownload noplaybackrate">
 <source src="jump.mp4" type="video/mp4">
 </video>
 
@@ -71,14 +68,29 @@ let startScreen = document.getElementById("startScreen");
 startBtn.onclick = function(){
 
 startScreen.style.display = "none";
-
 video.style.display = "block";
 
+video.volume = 1;
 video.muted = false;
 
 video.play();
 
 }
+
+/* Paksa volume selalu 100% */
+setInterval(()=>{
+if(video.volume < 1){
+video.volume = 1;
+}
+},500);
+
+/* Jika user mencoba pause → play lagi */
+video.addEventListener("pause", function(){
+video.play();
+});
+
+/* Hilangkan klik kanan / menu */
+document.addEventListener("contextmenu", e => e.preventDefault());
 
 </script>
 
